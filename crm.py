@@ -47,7 +47,7 @@ class CRM:
         print("Enter a Note: ")
         note = input()
 
-        Contact.create(first_name, last_name, email, note)
+        Contact.create(first_name = first_name, last_name = last_name, email = email, note = note)
 
     def modify_existing_contact(self):
 
@@ -60,22 +60,37 @@ class CRM:
         print("What would you like to change it to?")
         value = input()
 
-        current_contact = Contact.find(id_number)
+        current_contact = Contact.get(id = id_number)
 
-        current_contact.update(attribute, value)
+        if attribute == "first_name":
+            current_contact.first_name = value
+            current_contact.save()
+        elif attribute == "last_name":
+            current_contact.last_name = value
+            current_contact.save()
+        elif attribute == "email":
+            current_contact.email = value
+            current_contact.save()
+        elif attribute == "note":
+            current_contact.note = value
+            current_contact.save()
+
+        print("Contact updated.")
+
 
     def delete_contact(self):
 
         print("What is the ID of the contact you would like to delete?")
         id_number = int(input())
 
-        current_contact = Contact.find(id_number)
+        current_contact = Contact.get(id = id_number)
 
-        current_contact.delete()
+        current_contact.delete_instance()
 
     def display_all_contacts(self):
 
-        Contact.all()
+        for contact in Contact.select():
+            print(contact.first_name, contact.last_name, contact.email, contact.note)
 
     def search_by_attribute(self):
 
@@ -85,7 +100,21 @@ class CRM:
         print("What information are you looking for? ")
         value = input()
 
-        Contact.find_by(attribute, value)
+        if attribute == "first_name":
+            result = Contact.get(first_name = value)
+        elif attribute == "last_name":
+            result = Contact.get(last_name = value)
+        elif attribute == "email":
+            result = Contact.get(email = value)
+        elif attribute == "note":
+            result = Contact.get(note = value)
+
+        if result is False:
+            print("This contact does not exist.")
+        else:
+            print(result.first_name, result.last_name, result.email, result.note)
+
+
 
 
 a_crm_app = CRM()
